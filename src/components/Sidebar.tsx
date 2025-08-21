@@ -10,15 +10,16 @@ import {
   UserCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLocation, Link } from "react-router-dom";
 
 const sidebarItems = [
-  { icon: Home, label: "Dashboard", active: true },
-  { icon: Users, label: "Students" },
-  { icon: UserCheck, label: "Faculty" },
-  { icon: BookOpen, label: "Courses" },
-  { icon: Calendar, label: "Schedule" },
-  { icon: BarChart3, label: "Analytics" },
-  { icon: Settings, label: "Settings" },
+  { icon: Home, label: "Dashboard", path: "/" },
+  { icon: Users, label: "Students", path: "/students" },
+  { icon: UserCheck, label: "Faculty", path: "/faculty" },
+  { icon: BookOpen, label: "Courses", path: "/courses" },
+  { icon: Calendar, label: "Schedule", path: "/schedule" },
+  { icon: BarChart3, label: "Analytics", path: "/analytics" },
+  { icon: Settings, label: "Settings", path: "/settings" },
 ];
 
 interface SidebarProps {
@@ -26,6 +27,8 @@ interface SidebarProps {
 }
 
 export function Sidebar({ className }: SidebarProps) {
+  const location = useLocation();
+
   return (
     <div className={cn("flex h-full w-64 flex-col bg-card border-r", className)}>
       <div className="p-6">
@@ -42,21 +45,27 @@ export function Sidebar({ className }: SidebarProps) {
       
       <nav className="flex-1 px-4 pb-6">
         <div className="space-y-2">
-          {sidebarItems.map((item) => (
-            <Button
-              key={item.label}
-              variant={item.active ? "default" : "ghost"}
-              className={cn(
-                "w-full justify-start transition-smooth",
-                item.active 
-                  ? "bg-primary text-primary-foreground shadow-elegant" 
-                  : "hover:bg-muted"
-              )}
-            >
-              <item.icon className="mr-3 h-5 w-5" />
-              {item.label}
-            </Button>
-          ))}
+          {sidebarItems.map((item) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <Button
+                key={item.label}
+                variant={isActive ? "default" : "ghost"}
+                className={cn(
+                  "w-full justify-start transition-smooth",
+                  isActive 
+                    ? "bg-primary text-primary-foreground shadow-elegant" 
+                    : "hover:bg-muted"
+                )}
+                asChild
+              >
+                <Link to={item.path}>
+                  <item.icon className="mr-3 h-5 w-5" />
+                  {item.label}
+                </Link>
+              </Button>
+            );
+          })}
         </div>
       </nav>
     </div>
